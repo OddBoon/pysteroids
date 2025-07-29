@@ -1,6 +1,7 @@
 import pygame
 from circleshape import CircleShape
-from constants import PLAYER_RADIUS, PLAYER_TURN_SPEED, PLAYER_SPEED, PLAYER_FRICTION_DELTA
+from shot import Shot
+from constants import PLAYER_SHOOT_SPEED, PLAYER_RADIUS, PLAYER_TURN_SPEED, PLAYER_SPEED, PLAYER_COLOR,PLAYER_FRICTION_DELTA
 
 class Player(CircleShape):
     def __init__(self, x, y):
@@ -9,7 +10,7 @@ class Player(CircleShape):
     
     def draw(self, screen):
         #JADE GREEN:HEX 00A86B
-        pygame.draw.polygon(screen, (0, 168, 107), self.vec_ship(), 2)
+        pygame.draw.polygon(screen, PLAYER_COLOR, self.vec_ship(), 2)
     
     def slide(self, dt):
         self.velocity *= PLAYER_FRICTION_DELTA
@@ -37,8 +38,16 @@ class Player(CircleShape):
             self.accelerate(dt)
         if keys[pygame.K_s]:
             self.accelerate(-dt)
+        if keys[pygame.K_SPACE]:
+            self.shoot()
         self.slide(dt)
         
+    
+    def shoot(self):
+        pos_x, pos_y = self.position
+        new_shot = Shot(pos_x, pos_y)
+        shot_velocity = pygame.Vector2(0,1).rotate(self.rotation) * PLAYER_SHOOT_SPEED
+        new_shot.velocity = shot_velocity
     
     def vec_ship(self):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
