@@ -40,6 +40,10 @@ def main():
             if(asteroid.is_colliding(player)):
                 print("Game Over!")
                 pygame.event.post(pygame.event.Event(pygame.QUIT))
+            for shot in shots:
+                if(asteroid.is_colliding(shot)):
+                    shot.kill()
+                    asteroid.split(shot)
 
         for drawable in drawables:
             drawable.draw(screen)

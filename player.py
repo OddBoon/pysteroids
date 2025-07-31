@@ -1,12 +1,13 @@
 import pygame
 from circleshape import CircleShape
 from shot import Shot
-from constants import PLAYER_SHOOT_SPEED, PLAYER_RADIUS, PLAYER_TURN_SPEED, PLAYER_SPEED, PLAYER_COLOR,PLAYER_FRICTION_DELTA
+from constants import PLAYER_SHOOT_COOLDOWN, PLAYER_SHOOT_SPEED, PLAYER_RADIUS, PLAYER_TURN_SPEED, PLAYER_SPEED, PLAYER_COLOR,PLAYER_FRICTION_DELTA
 
 class Player(CircleShape):
     def __init__(self, x, y):
         super().__init__(x, y, PLAYER_RADIUS)
         self.rotation = 0.0
+        self.shooter_timer = 0.0
     
     def draw(self, screen):
         #JADE GREEN:HEX 00A86B
@@ -28,6 +29,10 @@ class Player(CircleShape):
 
     
     def update(self, dt):
+        if(self.shooter_timer > dt):
+            self.shooter_timer -= dt
+        else:
+            self.shooter_timer = 0.0
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_a]:
@@ -39,7 +44,9 @@ class Player(CircleShape):
         if keys[pygame.K_s]:
             self.accelerate(-dt)
         if keys[pygame.K_SPACE]:
-            self.shoot()
+            if(self.shooter_timer == 0):
+                self.shoot()
+                self.shooter_timer = PLAYER_SHOOT_COOLDOWN
         self.slide(dt)
         
     
